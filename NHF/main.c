@@ -14,7 +14,7 @@ int main(void) {
     scanf("%d", &menu);
 
     if (menu == 1) {
-        irasTest();
+        mainJatekAlgoritmus();
     }
     else if (menu == 2) {
         irasTestA();
