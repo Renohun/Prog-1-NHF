@@ -68,11 +68,36 @@ char* szinBevitel(void) {
     return kapottSzinek;
 }
 
+int* visszaJelzes(char* randomSzinek, char* kapottSzinek, int meret) {
+
+    int* tomb = malloc(4 * sizeof (int));
+    int oszlopVissajelzes;
+    for (int i = 0; i < meret; ++i) {
+        oszlopVissajelzes = 0;
+        for (int j = 0; j < meret; ++j) {
+            if (kapottSzinek[i] == randomSzinek[j]) {
+                oszlopVissajelzes = 1;
+                if (i == j) {
+                    oszlopVissajelzes = 2;
+                }
+            }
+        }
+        tomb[i] = oszlopVissajelzes;
+    }
+    return tomb;
+}
+
 void mainJatekAlgoritmus(void) {
     //Ez azert kell hogy mindig rendesen generalja le a random szamok, avagy valtozzon a seed
     srand(time(NULL));
     char szinek [4] = {0};
     randomSzinValasztas(szinek, 4);
+
+    for (int i = 0; i < 4; ++i) {
+        printf("%c", szinek[i]);
+    }
+
+    printf("\n");
 
     //Tablazat elkezdese
     printf("------------------------------\n------------------------------");
@@ -83,11 +108,13 @@ void mainJatekAlgoritmus(void) {
     printf("||");
 
     char* kapottSzinek = szinBevitel();
-    for (int i = 0; i < 4; ++i) {
-        printf("%c", kapottSzinek[i]);
-    }
+    int* jelzes = visszaJelzes(szinek, kapottSzinek, 4);
 
+    for (int i = 0; i < 4; ++i) {
+        printf("%d", jelzes[i]);
+    }
     free(kapottSzinek);
+    free(jelzes);
 
     //int jatekFolyamat = 1;
 
