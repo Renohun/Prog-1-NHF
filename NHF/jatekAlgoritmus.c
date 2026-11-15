@@ -57,7 +57,7 @@ int bevitelEll(char* szinek, int meret) {
 char* szinBevitel(void) {
     char* kapottSzinek = malloc (4 * sizeof (char));
     if (!kapottSzinek) { return  NULL; }
-    printf("\t");
+    printf("\n");
 
     int formatEll = scanf(" %c-%c-%c-%c", &kapottSzinek[0], &kapottSzinek[1], &kapottSzinek[2], &kapottSzinek[3]);
     int szinEll = bevitelEll(kapottSzinek, 4);
@@ -70,19 +70,28 @@ char* szinBevitel(void) {
 
 int* visszaJelzes(char* randomSzinek, char* kapottSzinek, int meret) {
 
-    int* tomb = malloc(4 * sizeof (int));
-    int oszlopVissajelzes;
+    int* tomb = calloc(meret * sizeof (int));
+    int feketeTomb [meret] = {0};
+
+    //Feketek avagy 2esek ellenorzese
     for (int i = 0; i < meret; ++i) {
-        oszlopVissajelzes = 0;
-        for (int j = 0; j < meret; ++j) {
-            if (kapottSzinek[i] == randomSzinek[j]) {
-                oszlopVissajelzes = 1;
-                if (i == j) {
-                    oszlopVissajelzes = 2;
+        if (kapottSzinek[i] == randomSzinek[i]) {
+            feketeTomb[i] = 1;
+            tomb[i] = 2;
+        }
+    }
+
+    //Feherek avagy 1esek ellenorzese, de ugy hogy nem vesszuk figyelembe azokat, ahol mar 2eset kapott
+    for (int i = 0; i < meret; ++i) {
+        if (tomb[i] != 2) {
+            for (int j = 0; j < meret; ++j) {
+                if (kapottSzinek[i] == randomSzinek[j] && feketeTomb[j] != 1) {
+                    tomb[i] = 1;
+                    feketeTomb[j] = 1;
+                    break;
                 }
             }
         }
-        tomb[i] = oszlopVissajelzes;
     }
     return tomb;
 }
@@ -98,29 +107,49 @@ void mainJatekAlgoritmus(void) {
     }
 
     printf("\n");
-
     //Tablazat elkezdese
-    printf("------------------------------\n------------------------------");
+    printf("------------------------------------------------------------\n------------------------------------------------------------");
     printf("\n");
     for (int i = 0; i < 4; ++i) {
         printf("||  ?  ");
     }
     printf("||");
 
-    char* kapottSzinek = szinBevitel();
-    int* jelzes = visszaJelzes(szinek, kapottSzinek, 4);
-
-    for (int i = 0; i < 4; ++i) {
-        printf("%d", jelzes[i]);
-    }
-    free(kapottSzinek);
-    free(jelzes);
-
-    //int jatekFolyamat = 1;
-
-    /*
+    int jatekFolyamat = 1;
     while (jatekFolyamat) {
         //Ide jon minden olyan kod ami a jatek folyaman meghivodik
-    }*/
+        char* kapottSzinek = szinBevitel();
+        //printf("\n");
+        for (int i = 0; i < 4; ++i) {
+            printf("||  %c  ", kapottSzinek[i]);
+        }
+        printf("||");
+
+        int* visszaJelzesTomb = visszaJelzes(szinek, kapottSzinek, 4);
+        for (int i = 0; i < 4; ++i) {
+            printf("||  %d  ", visszaJelzesTomb[i]);
+        }
+        printf("||");
+
+        int jatekFolyamatEll = 0;
+        for (int i = 0; i < 4; ++i) {
+            if (visszaJelzesTomb[i] == 2) {
+                jatekFolyamatEll++;
+            }
+        }
+
+        if (jatekFolyamatEll == 4) {
+            jatekFolyamat = 0;
+            free(visszaJelzesTomb);
+            free(kapottSzinek);
+        }
+        else {
+            printf("\n");
+            printf("------------------------------------------------------------\n------------------------------------------------------------");
+            free(visszaJelzesTomb);
+            free(kapottSzinek);
+        }
+    }
+    printf("\nGratula gyoztel!");
     printf("\n");
 }
