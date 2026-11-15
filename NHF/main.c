@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include "jatekAlgoritmus.h"
 #include "tabellaOlvasas.h"
@@ -15,6 +16,16 @@ int main(void) {
 
     if (menu == 1) {
         mainJatekAlgoritmus();
+
+        char valasz;
+        printf("\nSzeretnel megegyet jatszni? (I - N) ");
+        scanf(" %c", &valasz);
+
+        while (toupper(valasz) != 'N') {
+            mainJatekAlgoritmus();
+            printf("\n Szeretnel megegyet jatszni? (I - N) ");
+            scanf("%c", &valasz);
+        }
     }
     else if (menu == 2) {
         irasTestA();

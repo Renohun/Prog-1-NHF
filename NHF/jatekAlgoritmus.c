@@ -70,8 +70,8 @@ char* szinBevitel(void) {
 
 int* visszaJelzes(char* randomSzinek, char* kapottSzinek, int meret) {
 
-    int* tomb = calloc(meret * sizeof (int));
-    int feketeTomb [meret] = {0};
+    int* tomb = calloc(meret, sizeof (int));
+    int feketeTomb [4] = {0};
 
     //Feketek avagy 2esek ellenorzese
     for (int i = 0; i < meret; ++i) {
@@ -102,9 +102,11 @@ void mainJatekAlgoritmus(void) {
     char szinek [4] = {0};
     randomSzinValasztas(szinek, 4);
 
+
     for (int i = 0; i < 4; ++i) {
         printf("%c", szinek[i]);
     }
+
 
     printf("\n");
     //Tablazat elkezdese
