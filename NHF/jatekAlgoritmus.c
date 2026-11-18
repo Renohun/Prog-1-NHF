@@ -58,7 +58,6 @@ char* szinBevitel(void) {
     char* kapottSzinek = malloc (4 * sizeof (char));
     if (!kapottSzinek) { return  NULL; }
     printf("\n");
-
     int formatEll = scanf(" %c-%c-%c-%c", &kapottSzinek[0], &kapottSzinek[1], &kapottSzinek[2], &kapottSzinek[3]);
     int szinEll = bevitelEll(kapottSzinek, 4);
     while (formatEll != 4 || szinEll != 1) {
@@ -107,25 +106,37 @@ void mainJatekAlgoritmus(void) {
         printf("%c", szinek[i]);
     }
 
+    char felhasznaloNev[51];
+    printf("\nIrjon be egy felhasznalonevet (50 karakteres): ");
+    //csak 50 karakter lehet + 1 a \0
+    scanf(" %50s", felhasznaloNev);
+
+    int korokSzama = 0;
 
     printf("\n");
     //Tablazat elkezdese
     printf("------------------------------------------------------------\n------------------------------------------------------------");
     printf("\n");
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 8; ++i) {
         printf("||  ?  ");
     }
     printf("||");
 
+    //stopper inditasa
+    clock_t indit = clock();
+
     int jatekFolyamat = 1;
     while (jatekFolyamat) {
+
+        korokSzama++;
+
         //Ide jon minden olyan kod ami a jatek folyaman meghivodik
         char* kapottSzinek = szinBevitel();
         //printf("\n");
         for (int i = 0; i < 4; ++i) {
             printf("||  %c  ", kapottSzinek[i]);
         }
-        printf("||");
+        //printf("||");
 
         int* visszaJelzesTomb = visszaJelzes(szinek, kapottSzinek, 4);
         for (int i = 0; i < 4; ++i) {
@@ -152,6 +163,13 @@ void mainJatekAlgoritmus(void) {
             free(kapottSzinek);
         }
     }
-    printf("\nGratula gyoztel!");
+
+    clock_t leallit = clock();
+    float ms = (float)(leallit - indit) / CLOCKS_PER_SEC;
+
+    //Minden adat meg van ahhoz hogy fajlba irhassak
+    printf("\nGratulalunk neked %s gyoztel!", felhasznaloNev);
+    printf("\nEnnyi masodperc kellet neked: %f", ms);
+    printf("\nEnnyi tipp kellett: %d", korokSzama);
     printf("\n");
 }
