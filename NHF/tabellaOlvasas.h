@@ -5,6 +5,6 @@
 #ifndef NHF_TABELLAOLVASAS_H
 #define NHF_TABELLAOLVASAS_H
 
-void irasTestA(void);
+void tabellaOlvasasMain(void);
 
 #endif //NHF_TABELLAOLVASAS_H

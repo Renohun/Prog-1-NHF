@@ -95,6 +95,95 @@ int* visszaJelzes(char* randomSzinek, char* kapottSzinek, int meret) {
     return tomb;
 }
 
+int fajlOlvasas(char* felhasznaloNev) {
+    FILE* file = fopen("tabella.txt", "r");
+    if (file == NULL) {
+        return 1;
+    }
+    //100 hossz kb eleg
+    char sor[100];
+    while (fgets(sor, sizeof sor, file) != NULL) {
+        char fajlFelhasznaloNev[51];
+
+        int i;
+        for (i = 0; i < 50 && sor[i] != '-' && sor[i] != '\0'; ++i) {
+            fajlFelhasznaloNev[i] = sor[i];
+        }
+        fajlFelhasznaloNev[i] = '\0';
+
+        int cmpErtek = strcmp(felhasznaloNev, fajlFelhasznaloNev);
+        if (cmpErtek == 0) {
+            fclose(file);
+            //Volt egyezes - tehat ez a nev mar szerepel a tabellan
+            return 2;
+        }
+    }
+    fclose(file);
+    //Nem volt egyezes
+    return 1;
+}
+
+int fajlIras(char* falhasznaloNev, int korokSzama, float ido) {
+
+    int olvasasiErtek = fajlOlvasas(falhasznaloNev);
+
+    if (olvasasiErtek == 1) {
+        FILE* file = fopen("tabella.txt", "a");
+        if (file == NULL) {
+            printf("Hiba tortent fajlkezles alatt!");
+            return 0;
+        }
+        fprintf(file, "%s-%d-%f\n", falhasznaloNev, korokSzama, ido);
+        fclose(file);
+
+        return 1;
+    }
+    else if (olvasasiErtek == 2) {
+
+        FILE* fileOlv = fopen("tabella.txt", "r");
+        FILE* fileIrj = fopen("tabella_uj.txt", "w");
+
+        if (fileOlv == NULL){ fclose(fileIrj); return 0; }
+        if (fileIrj == NULL){ fclose(fileOlv); return 0; }
+
+        char sor [100];
+        while (fgets(sor, sizeof sor, fileOlv) != NULL) {
+            char fajlFelhasznaloNev[51];
+
+            int i;
+            for (i = 0; i < 50 && sor[i] != '-' && sor[i] != '\0'; ++i) {
+                fajlFelhasznaloNev[i] = sor[i];
+            }
+            fajlFelhasznaloNev[i] = '\0';
+            //jo sorban vagyunk kell osszahasonlitanunk erteket
+            if (strcmp(fajlFelhasznaloNev, falhasznaloNev) == 0) {
+                int fajlKorok;
+                float fajlIdo;
+
+                if (sscanf(sor, "%*[^-]-%d-%f", &fajlKorok, &fajlIdo) == 2) {
+                    if (fajlKorok > korokSzama && fajlIdo > ido) {
+                        fprintf(fileIrj, "%s-%d-%f\n", falhasznaloNev, korokSzama, ido);
+                    }
+                    else {
+                        fprintf(fileIrj, "%s", sor);
+                    }
+                }
+            }
+            else  {
+                fprintf(fileIrj, "%s", sor);
+            }
+        }
+
+        fclose(fileOlv);
+        fclose(fileIrj);
+        remove("tabella.txt");
+        rename("tabella_uj.txt", "tabella.txt");
+
+        return 2;
+    }
+    return 0;
+}
+
 void mainJatekAlgoritmus(void) {
     //Ez azert kell hogy mindig rendesen generalja le a random szamok, avagy valtozzon a seed
     srand(time(NULL));
@@ -171,5 +260,11 @@ void mainJatekAlgoritmus(void) {
     printf("\nGratulalunk neked %s gyoztel!", felhasznaloNev);
     printf("\nEnnyi masodperc kellet neked: %f", ms);
     printf("\nEnnyi tipp kellett: %d", korokSzama);
+
+    int eredmeny = fajlIras(felhasznaloNev, korokSzama, ms);
+    if (eredmeny == 1 || eredmeny == 2) {
+        printf("\nSikeres fajlkezelese!");
+    }
+
     printf("\n");
 }

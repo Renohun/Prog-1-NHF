@@ -1,7 +1,10 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "jatekAlgoritmus.h"
 #include "tabellaOlvasas.h"
+#include "debugmalloc.h"
 
 int main(void) {
 
@@ -23,15 +26,19 @@ int main(void) {
 
         while (toupper(valasz) != 'N') {
             mainJatekAlgoritmus();
-            printf("\n Szeretnel megegyet jatszni? (I - N) ");
-            scanf("%c", &valasz);
+            printf("\nSzeretnel megegyet jatszni? (I - N) ");
+            scanf(" %c", &valasz);
         }
+        printf("\n");
+        main();
     }
     else if (menu == 2) {
-        irasTestA();
+        tabellaOlvasasMain();
+        printf("\n");
+        main();
     }
     else if (menu == 3) {
-
+        exit(0);
     }
 
     return 0;
